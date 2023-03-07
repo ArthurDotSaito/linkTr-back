@@ -1,7 +1,7 @@
 import pg from "pg";
 import dotenv from "dotenv";
-dotenv.config();
 
+dotenv.config();
 const { Pool } = pg;
 
 const configDatabase = {
@@ -15,7 +15,7 @@ const configDatabase = {
 
 const db = new Pool(configDatabase);
 
-connection.query('SELECT NOW()', (err, res) => {
+db.query('SELECT NOW()', (err, res) => {
     if (err) {
       console.error('Erro ao conectar com o banco de dados', err);
     } else {

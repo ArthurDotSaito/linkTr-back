@@ -7,7 +7,6 @@ dotenv.config();
 const app = express();
 app.use(router)
 
-app.listen(port, (error) =>{
-    if(error) return console.log("Unable to listen server");
-    console.log(`server is running on port ${port}`);
-})
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running; PORT: ${process.env.PORT}`);
+});

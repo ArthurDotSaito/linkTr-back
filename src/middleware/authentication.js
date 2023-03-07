@@ -1,4 +1,4 @@
-import db from "../database/databaseConnection";
+import db from "../database/databaseConnection.js";
 
 export default async function auth(req, res, next) {
     const token = req.headers.authorization?.replace('Bearer ', '');
