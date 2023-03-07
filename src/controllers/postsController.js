@@ -1,5 +1,3 @@
-import db from "../database/databaseConnection.js"
+import db from "../database/databaseConnection.js";
 
-export async function topTrendings(req, res) {
-    
-}
+export async function topTrendings(req, res) {}
