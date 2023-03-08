@@ -13,6 +13,12 @@ export async function signUp(req, res) {
   const encryptedPassword = bcrypt.hashSync(password, 10);
 
   try {
+    const user = await userExists(email);
+
+    if (user.rows[0].email === email) {
+      return res.status(409).send("This e-mail is already registered!");
+    }
+
     await createUser(email, encryptedPassword, username, pictureUrl);
 
     res.sendStatus(201);
