@@ -5,7 +5,6 @@ const signUpSchema = joi.object({
   username: joi.string().min(1).required(),
   password: joi.string().min(1).required(),
   pictureUrl: joi.string().uri().required(),
-  confirmPassword: joi.string().valid(joi.ref("password")).required(),
 });
 
 export default signUpSchema;
