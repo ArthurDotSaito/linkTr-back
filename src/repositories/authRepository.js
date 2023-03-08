@@ -17,3 +17,11 @@ export function loginUser(token, userId) {
     userId,
   ]);
 }
+
+export async function sessionToken(token) {
+  return db.query(`SELECT * FROM sessions WHERE token = $1`, [token]);
+}
+
+export async function deleteToken(token) {
+  return db.query(`DELETE FROM sessions WHERE token = $1`, [token]);
+}
