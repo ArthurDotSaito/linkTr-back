@@ -14,6 +14,7 @@ export default async function auth(req, res, next) {
     session.rows[0].userId,
   ]);
 
-  res.locals.auth = user.rows[0];
+  res.locals.auth = user.rows[0].id;
+  console.log(user.rows[0].id);
   return next();
 }
