@@ -2,7 +2,8 @@ import db from "../database/databaseConnection.js";
 
 export default async function auth(req, res, next) {
   const token = req.headers.authorization?.replace("Bearer ", "");
-
+  console.log("Hello!")
+  console.log(token)
   if (!token) return res.sendStatus(401);
 
   const session = await db.query("SELECT * FROM sessions WHERE token = $1", [

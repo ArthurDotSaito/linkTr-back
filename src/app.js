@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import timelineRoutes from './routes/timeline.routes.js';
 import route from './routes/authRouter.js';
+import userSearch from './routes/searchUsersRouter.js';
 
 dotenv.config();
 
@@ -14,7 +15,7 @@ app.use(cors());
 
 app.use(timelineRoutes);
 app.use(route);
-
+app.use(userSearch)
 
 app.listen(port, (error) =>{
     if(error) return console.log("Unable to listen server");
