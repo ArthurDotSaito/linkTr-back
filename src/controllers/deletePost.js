@@ -3,10 +3,7 @@ import db from "../database/databaseConnection.js";
 export const deletePost = async(req,res) =>{
     const postId = Number(req.params.id);
     const userId = res.locals.auth;
-    console.log("postID",postId);
-    console.log("userID",userId)
     try{
-        console.log("why")
         const dbResponse = await db.query('SELECT id FROM posts WHERE "userId"=$1',[userId]);
         console.log(dbResponse.rows[0])
         if(dbResponse.rowCount === 0){
