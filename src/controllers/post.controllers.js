@@ -27,12 +27,16 @@ export async function getPosts(req,res){
             users.username as name,
             users.icon as image,
             posts.description as description,
-            posts.url as url
+            posts.url as url,
+            posts.id as postid
             FROM posts
             JOIN users
             ON posts."userId" = users.id
+            ORDER BY posts.id DESC
+            LIMIT 20;
 
     `);
+    console.log(allPosts);
     const arr = await Promise.all(
         allPosts.map(async (obj) => {
           let objectNew = { ...obj };
