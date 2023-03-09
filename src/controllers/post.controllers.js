@@ -26,6 +26,7 @@ export async function getPosts(req,res){
             users.id as id,
             users.username as name,
             users.icon as image,
+            posts.id as postId,
             posts.description as description,
             posts.url as url
             FROM posts
