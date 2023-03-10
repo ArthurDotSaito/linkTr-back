@@ -11,11 +11,11 @@ import uuidV4 from "uuid4";
 export async function signUp(req, res) {
   const { email, password, username, pictureUrl } = req.body;
   const encryptedPassword = bcrypt.hashSync(password, 10);
+ 
 
   try {
     const user = await userExists(email);
-
-    if (user.rows[0].email === email) {
+    if (user.rowCount > 1) {
       return res.status(409).send("This e-mail is already registered!");
     }
 

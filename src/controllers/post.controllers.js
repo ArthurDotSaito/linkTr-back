@@ -1,8 +1,6 @@
 import db from "../database/databaseConnection.js";
 import urlMetadata from "url-metadata";
 
-
-
 export async function publishPosts(req,res){
     let {description,url} = req.body;
     const userId = res.locals.auth;
