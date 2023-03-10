@@ -1,14 +1,24 @@
-import db from "../database/databaseConnection.js"
+import db from "../database/databaseConnection.js";
 
+export async function insertTread(req, res) {
+  await db.query(
+    "INSERT INTO trendings (id, name, createdAt) VALUES (default, $1, default)",
+    [req.body?.name]
+    );
+    return res.sendStatus(201)
+}
 export async function topTrendings(req, res) {
-    const data = await db.query(`
-    SELECT t.name, COUNT(pt.tradingId) as count_trading 
-    FROM trendings t 
-    INNER JOIN postTreads pt ON t.id = pt.tradingId 
-    WHERE t.tradingId = pt.id
-    GROUP BY t.id 
-    ORDER BY count_trading DESC 
-    LIMIT 10;
-    `)
-    console.log(data)
+  const data = await db.query(`
+SELECT 
+	trendings.name, 
+	COUNT(postTreads.trendingId) as count_trending 
+FROM trendings 
+LEFT JOIN postTreads ON trendings.id = postTreads.trendingId
+GROUP BY trendings.id 
+ORDER BY count_trending DESC 
+LIMIT 10;
+    `);
+  console.log(data);
+
+  return res.send(data);
 }
