@@ -6,6 +6,7 @@ import urlMetadata from "url-metadata";
 export async function publishPosts(req,res){
     let {description,url} = req.body;
     const userId = res.locals.auth;
+    console.log(userId)
 
     try{
         await db.query(
@@ -19,13 +20,14 @@ export async function publishPosts(req,res){
 }
 
 export async function getPosts(req,res){
-   
     try{
         const {rows: allPosts} = await db.query(`
             SELECT 
             users.id as id,
             users.username as name,
             users.icon as image,
+            posts.id as postId,
+            posts.likes as likes,
             posts.description as description,
             posts.url as url,
             posts.id as postid
@@ -52,12 +54,10 @@ export async function getPosts(req,res){
               console.log(error);
             }
           );
-          console.log(objectNew);
   
           return objectNew;
         })
-      );
-      /* console.log(arr) */
+      ); 
   
       res.send(arr);
     }catch(err){
