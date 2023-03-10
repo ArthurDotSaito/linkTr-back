@@ -3,6 +3,7 @@ import db from "../database/databaseConnection.js";
 export const deletePost = async(req,res) =>{
     const postId = Number(req.params.id);
     const userId = res.locals.auth;
+    console.log(userId)
     try{
         const dbResponse = await db.query('SELECT id FROM posts WHERE "userId"=$1',[userId]);
         console.log(dbResponse.rows[0])
@@ -11,7 +12,6 @@ export const deletePost = async(req,res) =>{
         }else{
             const deleteResponse = await db.query("DELETE FROM posts WHERE id = $1", [postId]);
             if(deleteResponse.rowCount === 0) return res.status(404).send("id não encontrado!");
-
             return res.status(204).send("Post deleted");
         }
         
