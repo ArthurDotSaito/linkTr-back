@@ -1,4 +1,4 @@
-import db from "../database/databaseConnection.js"
+import db from "../database/databaseConnection.js";
 
 export async function topTrendings(req, res) {
     const data = await db.query(`
@@ -11,4 +11,6 @@ export async function topTrendings(req, res) {
     LIMIT 10;
     `)
     console.log(data)
+    
+    return res.send(data)
 }
