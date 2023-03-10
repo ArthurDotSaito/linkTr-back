@@ -8,6 +8,6 @@ router.use(cors());
 router.use(express.json());
 
 router.use(auth)
-router.get("/hashtag/:hashtag", posts.topTrendings)
+router.get("/hashtag", posts.topTrendings)
 
 export default router;
