@@ -9,7 +9,7 @@ router.use(cors());
 router.use(express.json());
 
 router.use(authRouter);
-router.use(auth);
-router.get("/hashtag/:hashtag", posts.topTrendings);
+router.use(auth)
+router.get("/treadings", posts.topTrendings)
 
 export default router;
