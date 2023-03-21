@@ -17,14 +17,59 @@ export async function publishPosts(req,res){
     }
 }
 
-
-
 export async function getPosts(req,res){
-    const {newuser} = req.query
+  try{
+    const {rows: allPosts} = await db.query(`
+        SELECT 
+        users.id as id,
+        users.username as name,
+        users.icon as image,
+        posts.id as postId,
+        posts.likes as likes,
+        posts.description as description,
+        posts.url as url,
+        posts.id as postid
+        FROM posts
+        JOIN users
+        ON posts."userId" = users.id
+        ORDER BY posts.id DESC
+        LIMIT 20;
 
-    if(newuser){
+`);
+console.log(allPosts);
+const arr = await Promise.all(
+    allPosts.map(async (obj) => {
+      let objectNew = { ...obj };
+
+      const metaDatasUrl = await urlMetadata(obj.url).then(
+        function (metadata) {
+          /* console.log(metadata.title); */
+          objectNew.titleUrl = metadata.title;
+          objectNew.imageUrl = metadata.image;
+          objectNew.descriptionUrl = metadata.description;
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
+
+      return objectNew;
+    })
+  ); 
+
+  res.send(arr);
+}catch(err){
+    console.log(err);
+}
+}
+
+
+export async function getPostsId(req,res){
+    const {id} = req.params;
+
+    
       try{
-        const {rows: allPosts} = await db.query(`
+        const {rows: allPostsId} = await db.query(`
             SELECT 
             users.id as id,
             users.username as name,
@@ -37,14 +82,14 @@ export async function getPosts(req,res){
             FROM posts
             JOIN users
             ON posts."userId" = users.id
-            WHERE users.username=$1
+            WHERE users.id=$1
             ORDER BY posts.id DESC
             LIMIT 20;
     
-    `,[newuser]);
-    console.log(allPosts);
+    `,[id]);
+    console.log(allPostsId);
     const arr = await Promise.all(
-        allPosts.map(async (obj) => {
+        allPostsId.map(async (obj) => {
           let objectNew = { ...obj };
     
           const metaDatasUrl = await urlMetadata(obj.url).then(
@@ -67,51 +112,5 @@ export async function getPosts(req,res){
     }catch(err){
         console.log(err);
     }
-    } else {
-      try{
-        const {rows: allPosts} = await db.query(`
-            SELECT 
-            users.id as id,
-            users.username as name,
-            users.icon as image,
-            posts.id as postId,
-            posts.likes as likes,
-            posts.description as description,
-            posts.url as url,
-            posts.id as postid
-            FROM posts
-            JOIN users
-            ON posts."userId" = users.id
-            ORDER BY posts.id DESC
-            LIMIT 20;
-
-    `);
-    console.log(allPosts);
-    const arr = await Promise.all(
-        allPosts.map(async (obj) => {
-          let objectNew = { ...obj };
-  
-          const metaDatasUrl = await urlMetadata(obj.url).then(
-            function (metadata) {
-              /* console.log(metadata.title); */
-              objectNew.titleUrl = metadata.title;
-              objectNew.imageUrl = metadata.image;
-              objectNew.descriptionUrl = metadata.description;
-            },
-            function (error) {
-              console.log(error);
-            }
-          );
-  
-          return objectNew;
-        })
-      ); 
-  
-      res.send(arr);
-    }catch(err){
-        console.log(err);
-    }
-    }
-
-    
+     
 }
