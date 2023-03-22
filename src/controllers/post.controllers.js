@@ -60,3 +60,28 @@ export async function getPosts(req,res){
         console.log(err);
     }
 }
+
+export async function getPostByUserId(req, res) {
+  try{
+    const userPost = await db.query(`
+      SELECT 
+      users.id as id,
+      users.username as name,
+      users.icon as image,
+      posts.id as postId,
+      posts.likes as likes,
+      posts.description as description,
+      posts.url as url
+      FROM posts
+      JOIN users
+      ON posts."userId" = users.id
+      where posts."userId" = ${req.params?.id}
+    `);
+    const post = userPost.rows
+    if (post.length > 0) return res.send(post)
+    return res.sendStatus(404)
+
+  }catch(err){
+    return res.status(500).send(err.message)
+  }
+}
