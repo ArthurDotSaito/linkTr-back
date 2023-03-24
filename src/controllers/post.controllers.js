@@ -66,7 +66,6 @@ const arr = await Promise.all(
 
 export async function getPostsId(req,res){
     const {id} = req.params;
-
     
       try{
         const {rows: allPostsId} = await db.query(`
@@ -100,6 +99,7 @@ export async function getPostsId(req,res){
               objectNew.descriptionUrl = metadata.description;
             },
             function (error) {
+              console.log("Erro")
               console.log(error);
             }
           );
