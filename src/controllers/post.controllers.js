@@ -19,6 +19,8 @@ export async function publishPosts(req,res){
 
 export async function getPosts(req,res){
   try{
+    const offset = req.query.offset || 0;
+    const limit = 10;
     const {rows: allPosts} = await db.query(`
         SELECT 
         users.id as id,
@@ -33,9 +35,9 @@ export async function getPosts(req,res){
         JOIN users
         ON posts."userId" = users.id
         ORDER BY posts.id DESC
-        LIMIT 20;
-
-`);
+        OFFSET $1
+        LIMIT $2;
+`, [offset, limit]);
 console.log(allPosts);
 const arr = await Promise.all(
     allPosts.map(async (obj) => {
