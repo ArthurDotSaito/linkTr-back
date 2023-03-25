@@ -4,6 +4,7 @@ export const deletePost = async(req,res) =>{
     const postId = Number(req.params.id);
     const userId = res.locals.auth;
     console.log(userId)
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     try{
         const dbResponse = await db.query('SELECT id FROM posts WHERE "userId"=$1',[userId]);
         console.log(dbResponse.rows[0])

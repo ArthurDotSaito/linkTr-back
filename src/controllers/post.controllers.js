@@ -5,7 +5,7 @@ export async function publishPosts(req,res){
     let {description,url} = req.body;
     const userId = res.locals.auth;
     console.log(userId)
-
+  
     try{
         await db.query(
             'INSERT INTO posts ("userId",description,url) VALUES ($1,$2,$3)',[userId,description,url]
@@ -28,7 +28,8 @@ export async function getPosts(req,res){
         posts.likes as likes,
         posts.description as description,
         posts.url as url,
-        posts.id as postid
+        posts.id as postid,
+        posts."createdAt" as createdAt
         FROM posts
         JOIN users
         ON posts."userId" = users.id
