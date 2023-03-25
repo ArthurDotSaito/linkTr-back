@@ -7,7 +7,7 @@ import {
 } from "../repositories/authRepository.js";
 import bcrypt from "bcrypt";
 import uuidV4 from "uuid4";
-
+//local user
 export async function signUp(req, res) {
   const { email, password, username, pictureUrl } = req.body;
   const encryptedPassword = bcrypt.hashSync(password, 10);
@@ -65,4 +65,20 @@ export async function logout(req, res) {
   } catch (error) {
     res.status(500).send(error.message);
   }
+}
+
+//db user
+import db from "../database/databaseConnection.js";
+
+export async function searchUsers(req, res){
+    const findUser = req.query.q;
+    console.log(findUser)
+    try{
+        const dbResponse = await db.query('SELECT username, icon FROM users WHERE username ILIKE $1 LIMIT 3', [`%${findUser}%`]);
+        console.log(dbResponse.rows)
+        res.status(200).send(dbResponse.rows);
+    }catch(error){
+        console.log("Erro na busca de usuarios");
+        res.status(500).send(error.message);
+    }
 }
