@@ -5,6 +5,7 @@ import timelineRoutes from './routes/timeline.routes.js';
 import route from './routes/authRouter.js';
 import userSearch from './routes/searchUsersRouter.js';
 import likesRoutes from './routes/likesRouter.js';
+import commentRoute from './routes/commentsRouter.js';
 
 dotenv.config();
 
@@ -17,7 +18,8 @@ app.use(cors());
 app.use(timelineRoutes);
 app.use(route);
 app.use(userSearch)
-app.use(likesRoutes)
+app.use(likesRoutes);
+app.use(commentRoute);
 
 app.listen(port, (error) =>{
     if(error) return console.log("Unable to listen server");
