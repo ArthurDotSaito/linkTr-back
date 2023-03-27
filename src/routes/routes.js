@@ -19,7 +19,7 @@ router.post("/signin", validateSchema(signInSchema), users.signIn);
 // START GET ROUTES
 router.get("userTimeline/:id", posts.getPostByUserId);
 router.get("/timelines", posts.getPosts);
-router.get("/treadings", posts.topTrendings);
+router.get("/treadings", posts.topTrendings);0
 
 router.get("/search", users.searchUsers);
 
@@ -36,11 +36,20 @@ router.delete("/logout", users.logout);
 
 router.use(auth);
 
+// START AUTH ROUTES GET
+router.get("/timelinesusers", posts.getPostByFollowers)
+
+router.get("/connections/:id", users.isfollow)
+
 // START AUTH ROUTES POST
 router.post("/timelines", validateSchema(publishSchema), posts.publishPosts);
 
+router.post("connections/:id", users.addFollow)
+
 // START AUTH DELETE ROUTE
 router.delete("/timelines/:id", posts.deletePost);
+
+router.delete("/connections/:id", users.removeFollow);
 
 // START AUTH PUT ROUTES
 router.put("/likes/:id", posts.putLike);
