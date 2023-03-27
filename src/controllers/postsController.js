@@ -18,47 +18,55 @@ export async function publishPosts(req, res) {
     res.status(500).send(err);
   }
 }
-export async function getPosts(req, res) {
-  try {
-    const { rows: allPosts } = await db.query(`
-            SELECT 
-            users.id as id,
-            users.username as name,
-            users.icon as image,
-            posts.id as postId,
-            posts.likes as likes,
-            posts.description as description,
-            posts.url as url
-            FROM posts
-            JOIN users
-            ON posts."userId" = users.id
+export async function getPosts(req,res){
+  try{
+    const offset = req.query.offset || 0;
+    const limit = 10;
+    const {rows: allPosts} = await db.query(`
+        SELECT 
+        users.id as id,
+        users.username as name,
+        users.icon as image,
+        posts.id as postId,
+        posts.likes as likes,
+        posts.description as description,
+        posts.url as url,
+        posts.id as postid
+        FROM posts
+        JOIN users
+        ON posts."userId" = users.id
+        ORDER BY posts.id DESC
+        OFFSET $1
+        LIMIT $2;
+`, [offset, limit]);
+console.log(allPosts);
+const arr = await Promise.all(
+    allPosts.map(async (obj) => {
+      let objectNew = { ...obj };
 
-    `);
-    const arr = await Promise.all(
-      allPosts.map(async (obj) => {
-        let objectNew = { ...obj };
+      const metaDatasUrl = await urlMetadata(obj.url).then(
+        function (metadata) {
+          /* console.log(metadata.title); */
+          objectNew.titleUrl = metadata.title;
+          objectNew.imageUrl = metadata.image;
+          objectNew.descriptionUrl = metadata.description;
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
 
-        const metaDatasUrl = await urlMetadata(obj.url).then(
-          function (metadata) {
-            /* console.log(metadata.title); */
-            objectNew.titleUrl = metadata.title;
-            objectNew.imageUrl = metadata.image;
-            objectNew.descriptionUrl = metadata.description;
-          },
-          function (error) {
-            console.log(error);
-          }
-        );
+      return objectNew;
+    })
+  ); 
 
-        return objectNew;
-      })
-    );
-
-    res.send(arr);
-  } catch (err) {
+  res.send(arr);
+}catch(err){
     console.log(err);
   }
 }
+
+
 export async function getPostByUserId(req, res) {
   try {
     const userPost = await db.query(`
@@ -74,6 +82,7 @@ export async function getPostByUserId(req, res) {
       JOIN users
       ON posts."userId" = users.id
       where posts."userId" = ${req.params?.id}
+
     `);
     const post = userPost.rows;
     if (post.length > 0) return res.send(post);
@@ -82,6 +91,7 @@ export async function getPostByUserId(req, res) {
     return res.status(500).send(err.message);
   }
 }
+
 export const putLike = async (req, res) => {
   const postId = req.params.id;
   const { type } = req.body;
