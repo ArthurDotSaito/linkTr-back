@@ -13,7 +13,7 @@ export default async function auth(req, res, next) {
     session.rows[0].userId,
   ]);
 
-  res.locals.auth = user.rows[0].id;
+  res.locals.auth = user.rows[0];
 
   return next();
 }

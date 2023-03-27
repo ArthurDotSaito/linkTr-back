@@ -10,7 +10,7 @@ export async function publishPosts(req, res) {
   try {
     await db.query(
       'INSERT INTO posts ("userId",description,url) VALUES ($1,$2,$3)',
-      [userId, description, url]
+      [userId.id, description, url]
     );
     res.sendStatus(201);
   } catch (err) {
@@ -63,6 +63,31 @@ export async function getPostByUserId(req, res) {
   try {
     const userPost = await db.query(`
       SELECT 
+        users.id as id,
+        users.username as name,
+        users.icon as image,
+        posts.id as postId,
+        posts.likes as likes,
+        posts.description as description,
+        posts.url as url
+      FROM posts
+      JOIN users
+      ON posts."userId" = users.id
+      where posts."userId" = ${req.params?.id}
+    `);
+    const post = userPost.rows;
+    if (post.length > 0) return res.send(post);
+    return res.sendStatus(404);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+}
+export async function getPostByFollowers(req, res) {
+  try {
+    const user = res.auth.locals;
+    const userPost = await db.query(
+      `
+    SELECT 
       users.id as id,
       users.username as name,
       users.icon as image,
@@ -70,11 +95,13 @@ export async function getPostByUserId(req, res) {
       posts.likes as likes,
       posts.description as description,
       posts.url as url
-      FROM posts
-      JOIN users
-      ON posts."userId" = users.id
-      where posts."userId" = ${req.params?.id}
-    `);
+    FROM posts
+    JOIN users ON posts."userId" = users.id
+    JOIN connections ON connections.user = users.id
+    WHERE connections.user = $1;
+    `,
+      [user.id]
+    );
     const post = userPost.rows;
     if (post.length > 0) return res.send(post);
     return res.sendStatus(404);
@@ -120,7 +147,7 @@ export const deletePost = async (req, res) => {
   try {
     const dbResponse = await db.query(
       'SELECT id FROM posts WHERE "userId"=$1',
-      [userId]
+      [userId.id]
     );
     console.log(dbResponse.rows[0]);
     if (dbResponse.rowCount === 0) {
